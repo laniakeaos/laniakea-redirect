@@ -1,30 +1,9 @@
 import ipaddress
 
+from ipwhois import IPWhois
+
 FALLBACK_URL = "https://mirror.rackspace.com/archlinux/$repo/os/$arch"
 
-ip_addresses = {
-    "jp": {
-        "ipv4": [
-            "123.0.0.0/8",
-            "124.0.0.0/8",
-            "210.0.0.0/8",
-            "211.0.0.0/8",
-            "220.0.0.0/8",
-            "27.0.0.0/8",
-            "180.0.0.0/8",
-            "49.0.0.0/8",
-        ],
-        "ipv6": [
-            "2400:0000::/4",
-            "2001:200::/23",
-            "2001:218::/23",
-        ],
-    },
-    "kr": {
-        "ipv4": [],
-        "ipv6": [],
-    },
-}
 
 countries = {
     "jp": {
@@ -42,28 +21,19 @@ countries = {
     },
 }
 
+
 def get_country(ip_addr: str):
     country_code = "us"
-    for country in ip_addresses.keys():
-        ipv4_li = list(ipaddress.ip_network(r) for r in ip_addresses[country]["ipv4"])
-        ipv6_li = list(ipaddress.ip_network(r, strict=False) for r in ip_addresses[country]["ipv6"])
-        if any(ipaddress.ip_address(ip_addr) in ipnet for ipnet in ipv4_li):
-            country_code = country
-        elif any(ipaddress.ip_address(ip_addr) in ipnet for ipnet in ipv6_li):
-            country_code = country
+
+    try:
+        whois = IPWhois(ip_addr)
+        result = whois.lookup_rdap()
+        country_code: str = result.get("asn_country_code", "us")
+        country_code = country_code.lower()
+    except:
+        pass
 
     if country_code == "ko":
         return countries["jp"]
     else:
         return countries[country_code]
-
-## Japan
-# 123.0.0.0/8
-# 124.0.0.0/8
-# 210.0.0.0/8
-# 211.0.0.0/8
-# 220.0.0.0/8
-# 27.0.0.0/8
-# 180.0.0.0/8
-# 49.0.0.0/8
-# 27.0.0.0/8
