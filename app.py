@@ -13,7 +13,7 @@ def make_redirect_url(base_url: str, repo: str, arch: str="x86_64") -> str:
 
 def get_country_and_print(ip_addr: str):
     country = get_country(ip_addr)
-    print(f"{ip_addr} - {country["display_name"]}")
+    print(f"{ip_addr} - {country['display_name']}")
 
     return country
 
