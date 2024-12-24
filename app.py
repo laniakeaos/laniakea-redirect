@@ -30,7 +30,7 @@ def catch_core(path):
 
     success = False
 
-    redirect_url = f"{ARCHIVE_URL}/{repo}/{arch}/{path}"
+    redirect_url = f"{ARCHIVE_URL}/laniakea/{repo}/{arch}/{path}"
     res = requests.head(redirect_url)
     status = res.status_code
     if status == 200:
