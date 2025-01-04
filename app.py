@@ -18,6 +18,14 @@ def get_country_and_print(ip_addr: str):
     return country
 
 
+@app.after_request
+def add_cors_headers(response):
+    if request.method == "HEAD":
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "HEAD"
+    return response
+
+
 @app.route("/ping")
 def ping():
     return ""
